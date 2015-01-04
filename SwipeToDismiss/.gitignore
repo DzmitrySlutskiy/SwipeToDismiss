@@ -4,14 +4,6 @@
 /.idea/libraries
 .DS_Store
 /build
-
-.gradle
-/gradle
-/local.properties
-/.idea/workspace.xml
-/.idea/libraries
-.DS_Store
-/build
 /json_sample
 .idea
 gradlew
