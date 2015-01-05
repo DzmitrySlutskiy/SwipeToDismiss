@@ -6,6 +6,7 @@ import android.animation.ValueAnimator;
 import android.graphics.Rect;
 import android.os.SystemClock;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -22,6 +23,7 @@ import java.util.List;
  * Created by Uladzimir_Klyshevich on 12/4/2014.
  */
 public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListener {
+    public static final String TAG = SwipeDismissRecyclerViewTouchListener.class.getSimpleName();
     // Cached ViewConfiguration and system-wide constant values
     private int mSlop;
     private int mMinFlingVelocity;
@@ -93,7 +95,7 @@ public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListen
      * @param enabled Whether or not to watch for gestures.
      */
     public void setEnabled(boolean enabled) {
-        mPaused = ! enabled;
+        mPaused = !enabled;
     }
 
     /**
@@ -121,6 +123,7 @@ public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListen
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
+//        Log.d(TAG, "onTouch: " + motionEvent);
         if (mViewWidth < 2) {
             mViewWidth = mRecyclerView.getWidth();
         }
@@ -147,7 +150,7 @@ public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListen
                     child.getHitRect(rect);
                     if (rect.contains(x, y)) {
                         mRootView = child;
-                        mDownView = child.findViewById(R.id.recycler_view);
+                        mDownView = child.findViewById(R.id.item);
                         break;
                     }
                 }
@@ -217,9 +220,9 @@ public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListen
                     // dismiss
                     final View downView = mDownView; // mDownView gets null'd before animation ends
                     final int downPosition = mDownPosition;
-                    ++ mDismissAnimationRefCount;
+                    ++mDismissAnimationRefCount;
                     mDownView.animate()
-                            .translationX(dismissRight ? mViewWidth : - mViewWidth)
+                            .translationX(dismissRight ? mViewWidth : -mViewWidth)
                                     //.alpha(0)
                             .setDuration(mAnimationTime)
                             .setListener(new AnimatorListenerAdapter() {
@@ -257,7 +260,7 @@ public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListen
                 float deltaY = motionEvent.getRawY() - mDownY;
                 if (Math.abs(deltaX) > mSlop && Math.abs(deltaY) < Math.abs(deltaX) / 2) {
                     mSwiping = true;
-                    mSwipingSlop = (deltaX > 0 ? mSlop : - mSlop);
+                    mSwipingSlop = (deltaX > 0 ? mSlop : -mSlop);
                     mRecyclerView.requestDisallowInterceptTouchEvent(true);
 
                     // Cancel ListView's touch (un-highlighting the item)
@@ -329,7 +332,7 @@ public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListen
         mPendingDismisses.add(new PendingDismissData(dismissPosition, dismissView));
         //animator.start();
 
-        -- mDismissAnimationRefCount;
+        --mDismissAnimationRefCount;
         if (mDismissAnimationRefCount == 0) {
             // No active animations, process all pending dismisses.
             // Sort by descending position

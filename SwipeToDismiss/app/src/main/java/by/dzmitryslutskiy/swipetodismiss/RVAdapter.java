@@ -6,14 +6,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 /**
- * Classname
+ * RVAdapter
  * Version information
  * 04.01.2015
  * Created by Dzmitry Slutskiy.
  */
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
-    private String[] mDataset;
+    public static final String TAG = RVAdapter.class.getSimpleName();
+    private List<String> mDataset;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -21,14 +24,37 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView mTextView;
+        public ViewGroup mRootView;
+        public View mSelected;
+
         public ViewHolder(View v) {
             super(v);
+            mSelected = v.findViewById(R.id.selected_background);
+
+            mRootView = (ViewGroup) v.findViewById(R.id.item);
+            /*mRootView.setLongClickable(true);
+            mRootView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Log.d(TAG, "onLongClick");
+                    mSelected.setVisibility(mSelected.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+                    return false;
+                }
+            });
+            mRootView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "onClick");
+                    mSelected.setVisibility(mSelected.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+                }
+            });*/
+
             mTextView = (TextView) v.findViewById(R.id.text_view);
         }
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public RVAdapter(String[] myDataset) {
+    public RVAdapter(List<String> myDataset) {
         mDataset = myDataset;
     }
 
@@ -49,14 +75,14 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.mTextView.setText(mDataset[position]);
+        holder.mTextView.setText(mDataset.get(position));
 
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mDataset.length;
+        return mDataset.size();
     }
 
 }

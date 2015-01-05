@@ -1,22 +1,27 @@
 package by.dzmitryslutskiy.swipetodismiss;
 
-import android.content.ContentValues;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 
 public class MainActivity extends ActionBarActivity {
-
+    public static final String TAG = MainActivity.class.getSimpleName();
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private String[] mDataset = new String[]{"aaa", "bbb", "ccc"};
+    private List<String> mDataset = new ArrayList<String>(Arrays.asList("aaaaaaaaaaaaaa", "bbbbbbbbbbbbbb", "cccccccccccccc"
+            , "dddddddddddddd", "eeeeeeeeeeeeee", "ffffffffffffff", "gggggggggggggg", "aaaaaaaaaaaaaa", "bbbbbbbbbbbbbb", "cccccccccccccc"
+            , "dddddddddddddd", "eeeeeeeeeeeeee", "ffffffffffffff", "gggggggggggggg"));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,16 +64,24 @@ public class MainActivity extends ActionBarActivity {
                                             if (nextItemViewType == 1) {
                                                 int pos = position - 1;
 //                                                mResult.remove(pos);
+                                                Log.d(TAG,"remove: "+pos);
+                                                mDataset.remove(pos);
                                                 adapter.notifyItemRemoved(pos);
                                             }
                                         } else {
                                             if (prevItemViewType == 1) {
                                                 int pos = position - 1;
 //                                                mResult.remove(pos);
+                                                Log.d(TAG,"remove: "+pos);
+                                                mDataset.remove(pos);
                                                 adapter.notifyItemRemoved(pos);
                                             }
                                         }
                                     }
+                                    int pos = position;
+                                    Log.d(TAG,"remove: "+pos);
+                                    mDataset.remove(pos);
+                                    adapter.notifyItemRemoved(pos);
 //                                    int pos = mResult.indexOf(values);
 //                                    mResult.remove(values);
 //                                    adapter.notifyItemRemoved(pos);
@@ -82,7 +95,7 @@ public class MainActivity extends ActionBarActivity {
                                         recyclerView.getRecycledViewPool().clear();
                                         adapter.notifyDataSetChanged();
                                     }
-                                }, (getItemAnimator().getRemoveDuration() + getItemAnimator().getMoveDuration()) * 2);
+                                }, (/*getItemAnimator().getRemoveDuration() + getItemAnimator().getMoveDuration()*/200) * 2);
 
                             }
 
@@ -90,26 +103,41 @@ public class MainActivity extends ActionBarActivity {
                             @Override
                             public void onDismissRight(View mRootView, boolean dismissRight) {
                                 if (dismissRight) {
-                                    mRootView.findViewById(R.id.yellow).setVisibility(View.INVISIBLE);
-                                    mRootView.findViewById(R.id.green).setVisibility(View.VISIBLE);
+                                    mRootView.findViewById(R.id.left_dismiss).setVisibility(View.INVISIBLE);
+                                    mRootView.findViewById(R.id.right_dismiss).setVisibility(View.VISIBLE);
                                 } else {
-                                    mRootView.findViewById(R.id.yellow).setVisibility(View.VISIBLE);
-                                    mRootView.findViewById(R.id.green).setVisibility(View.INVISIBLE);
+                                    mRootView.findViewById(R.id.left_dismiss).setVisibility(View.VISIBLE);
+                                    mRootView.findViewById(R.id.right_dismiss).setVisibility(View.INVISIBLE);
                                 }
                             }
                         });
         mRecyclerView.setOnTouchListener(touchListener);
 //        setOnScrollListViewListener(touchListener.makeScrollListener());
-//        mRecyclerView.addOnItemTouchListener(new MainActivity.PlaceholderFragment.RecyclerItemClickListener(getActivity(),
-//                new MainActivity.PlaceholderFragment.OnItemClickListener() {
-//                    @Override
-//                    public void onItemClick(View view, int position) {
-//                        Intent intent = new Intent(getActivity(), SubscriptionActivity.class);
-//                        ContentValues values = mResult.get(position);
-//                        intent.putExtra(SubscriptionActivity.ITEM, values);
-//                        startActivity(intent);
-//                    }
-//                }));
+        /*mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent motionEvent) {
+                Log.d(TAG, "onInterceptTouchEvent: " + motionEvent);
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView recyclerView, MotionEvent motionEvent) {
+                Log.d(TAG, "onTouchEvent: "+ motionEvent);
+            }
+        });*/
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this,new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Log.d(TAG, "onItemClick: "+ view);
+                View backgroundView =view.findViewById(R.id.selected_background);
+                backgroundView.setVisibility(backgroundView.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+                Log.d(TAG, "onLongClick: "+ view);
+            }
+        }));
     }
 
 
