@@ -60,12 +60,17 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
 
     // Create new views (invoked by the layout manager)
     @Override
-    public RVAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                   int viewType) {
+    public RVAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.rv_item, parent, false);
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        View v = layoutInflater.inflate(R.layout.rv_item, parent, false);
         // set the view's size, margins, paddings and layout parameters
+
+        View rightDismiss = layoutInflater.inflate(R.layout.right_dismiss_layout, parent, false);
+        ((ViewGroup) v.findViewById(R.id.right_dismiss)).addView(rightDismiss);
+
+        View leftDismiss = layoutInflater.inflate(R.layout.left_dismiss_layout, parent, false);
+        ((ViewGroup) v.findViewById(R.id.left_dismiss)).addView(leftDismiss);
 
         return new ViewHolder(v);
     }

@@ -64,16 +64,12 @@ public class MainActivity extends ActionBarActivity {
                                             if (nextItemViewType == 1) {
                                                 int pos = position - 1;
 //                                                mResult.remove(pos);
-                                                Log.d(TAG,"remove: "+pos);
-                                                mDataset.remove(pos);
                                                 adapter.notifyItemRemoved(pos);
                                             }
                                         } else {
                                             if (prevItemViewType == 1) {
                                                 int pos = position - 1;
 //                                                mResult.remove(pos);
-                                                Log.d(TAG,"remove: "+pos);
-                                                mDataset.remove(pos);
                                                 adapter.notifyItemRemoved(pos);
                                             }
                                         }

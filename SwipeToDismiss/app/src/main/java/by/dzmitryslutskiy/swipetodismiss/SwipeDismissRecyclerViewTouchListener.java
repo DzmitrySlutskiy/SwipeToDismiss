@@ -6,7 +6,6 @@ import android.animation.ValueAnimator;
 import android.graphics.Rect;
 import android.os.SystemClock;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -45,6 +44,8 @@ public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListen
     private VelocityTracker mVelocityTracker;
     private int mDownPosition;
     private View mDownView;
+    private View mRightView;
+    private View mLeftView;
     private View mRootView;
     private boolean mPaused;
 
@@ -151,6 +152,11 @@ public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListen
                     if (rect.contains(x, y)) {
                         mRootView = child;
                         mDownView = child.findViewById(R.id.item);
+                        mRightView = child.findViewById(R.id.right_dismiss);
+                        mRightView.setTranslationX(-mViewWidth);
+
+                        mLeftView = child.findViewById(R.id.left_dismiss);
+                        mLeftView.setTranslationX(mViewWidth);
                         break;
                     }
                 }
@@ -165,6 +171,8 @@ public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListen
                     } else {
                         mDownView = null;
                         mRootView = null;
+                        mRightView = null;
+                        mLeftView = null;
                     }
                 }
                 return false;
@@ -231,13 +239,17 @@ public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListen
                                     performDismiss(downView, downPosition);
                                 }
                             });
+                    if (dismissRight) {
+                        animateView(mRightView,0,mAnimationTime);
+                    } else {
+                        animateView(mLeftView,0,mAnimationTime);
+                    }
                 } else {
                     // cancel
-                    mDownView.animate()
-                            .translationX(0)
-                                    //.alpha(1)
-                            .setDuration(mAnimationTime)
-                            .setListener(null);
+                    animateView(mDownView, 0, mAnimationTime);
+                    animateView(mRightView, -mViewWidth, mAnimationTime);
+                    animateView(mLeftView, mViewWidth, mAnimationTime);
+
                 }
                 mVelocityTracker.recycle();
                 mVelocityTracker = null;
@@ -275,6 +287,10 @@ public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListen
                 if (mSwiping) {
                     float newTranslationX = deltaX - mSwipingSlop;
                     mDownView.setTranslationX(newTranslationX);
+
+                    mRightView.setTranslationX(-mViewWidth + newTranslationX);
+                    mLeftView.setTranslationX(mViewWidth + newTranslationX);
+
                     if (mCallbacks != null) {
                         mCallbacks.onDismissRight(mRootView, newTranslationX > 0);
                     }
@@ -286,6 +302,17 @@ public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListen
             }
         }
         return false;
+    }
+
+    private void animateView(View animatedView, int translation, long duration) {
+        animateView(animatedView, translation, duration, null);
+    }
+
+    private void animateView(View animatedView, int translation, long duration, Animator.AnimatorListener listener) {
+        animatedView.animate()
+                .translationX(translation)
+                .setDuration(duration)
+                .setListener(listener);
     }
 
     class PendingDismissData implements Comparable<PendingDismissData> {
