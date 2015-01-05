@@ -1,11 +1,13 @@
 package by.dzmitryslutskiy.swipetodismiss;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,7 +19,9 @@ import java.util.List;
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
     public static final String TAG = RVAdapter.class.getSimpleName();
     private List<String> mDataset;
+    private SparseBooleanArray selectedItems;
 
+    private View.OnTouchListener mTouchListener;
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
@@ -32,6 +36,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
             mSelected = v.findViewById(R.id.selected_background);
 
             mRootView = (ViewGroup) v.findViewById(R.id.item);
+
             /*mRootView.setLongClickable(true);
             mRootView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -54,8 +59,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public RVAdapter(List<String> myDataset) {
+    public RVAdapter(List<String> myDataset,View.OnTouchListener touchListener ) {
         mDataset = myDataset;
+        mTouchListener = touchListener;
     }
 
     // Create new views (invoked by the layout manager)
@@ -65,6 +71,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View v = layoutInflater.inflate(R.layout.rv_item, parent, false);
         // set the view's size, margins, paddings and layout parameters
+//        v.setOnTouchListener(mTouchListener);
 
         View rightDismiss = layoutInflater.inflate(R.layout.right_dismiss_layout, parent, false);
         ((ViewGroup) v.findViewById(R.id.right_dismiss)).addView(rightDismiss);
@@ -90,4 +97,30 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
         return mDataset.size();
     }
 
+    public void toggleSelection(int pos) {
+        if (selectedItems.get(pos, false)) {
+            selectedItems.delete(pos);
+        }
+        else {
+            selectedItems.put(pos, true);
+        }
+        notifyItemChanged(pos);
+    }
+
+    public void clearSelections() {
+        selectedItems.clear();
+        notifyDataSetChanged();
+    }
+
+    public int getSelectedItemCount() {
+        return selectedItems.size();
+    }
+
+    public List<Integer> getSelectedItems() {
+        List<Integer> items = new ArrayList<Integer>(selectedItems.size());
+        for (int i = 0; i < selectedItems.size(); i++) {
+            items.add(selectedItems.keyAt(i));
+        }
+        return items;
+    }
 }

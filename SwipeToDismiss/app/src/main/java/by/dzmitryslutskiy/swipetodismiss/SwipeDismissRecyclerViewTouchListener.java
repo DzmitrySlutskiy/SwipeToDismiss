@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * SwipeDismissRecyclerViewTouchListener
  * Created by Uladzimir_Klyshevich on 12/4/2014.
  */
 public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListener {
@@ -124,7 +125,6 @@ public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListen
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-//        Log.d(TAG, "onTouch: " + motionEvent);
         if (mViewWidth < 2) {
             mViewWidth = mRecyclerView.getWidth();
         }
@@ -152,6 +152,7 @@ public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListen
                     if (rect.contains(x, y)) {
                         mRootView = child;
                         mDownView = child.findViewById(R.id.item);
+
                         mRightView = child.findViewById(R.id.right_dismiss);
                         mRightView.setTranslationX(-mViewWidth);
 
@@ -185,11 +186,7 @@ public class SwipeDismissRecyclerViewTouchListener implements View.OnTouchListen
 
                 if (mDownView != null && mSwiping) {
                     // cancel
-                    mDownView.animate()
-                            .translationX(0)
-                                    //.alpha(1)
-                            .setDuration(mAnimationTime)
-                            .setListener(null);
+                    animateView(mDownView, 0, mAnimationTime);
                 }
                 mVelocityTracker.recycle();
                 mVelocityTracker = null;

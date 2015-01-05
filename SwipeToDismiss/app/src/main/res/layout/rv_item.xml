@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFFF0000"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <RelativeLayout
         android:id="@+id/left_dismiss"
@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="4dp"
-        android:background="#00FFF0"
+
         android:id="@+id/item">
 
         <ImageView
@@ -39,12 +39,12 @@
             android:layout_height="match_parent" />
     </RelativeLayout>
 
-
-
     <View
         android:id="@+id/selected_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#82F00F00"
+
+        android:background="@drawable/ripple_mask"
+
         android:visibility="gone" />
 </RelativeLayout>
