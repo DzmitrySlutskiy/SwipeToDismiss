@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 /**
+ * RecyclerItemClickListener
  * Created by Dzmitry_Slutski on 05.01.2015.
  */
 public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
@@ -18,7 +19,7 @@ public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListen
     public interface OnItemClickListener {
         public void onItemClick(View view, int position, MotionEvent e);
 
-        public void onLongClick(View view, int position);
+        public void onLongClick(View view, int position, MotionEvent e);
     }
 
     GestureDetector mGestureDetector;
@@ -39,13 +40,16 @@ public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListen
                 super.onLongPress(e);
                 Log.d(TAG, "onLongPress: " + e);
                 View childView = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
-                mListener.onLongClick(childView, mRecyclerView.getChildPosition(childView));
+                if (mListener != null && childView != null) {
+                    mListener.onLongClick(childView, mRecyclerView.getChildPosition(childView), e);
+                }
             }
         });
     }
 
     @Override
     public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {
+        //TODO may be move this code to onSingleTapUp ?
         View childView = view.findChildViewUnder(e.getX(), e.getY());
         Log.d(TAG, "onInterceptTouchEvent: " + childView);
         if (childView != null && mListener != null && mGestureDetector.onTouchEvent(e)) {
