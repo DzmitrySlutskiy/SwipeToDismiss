@@ -30,8 +30,8 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mBackgroundContainer = (BackgroundContainer) findViewById(R.id.list_view_background);
+        Log.d(TAG, "OnCreate");
+//        mBackgroundContainer = (BackgroundContainer) findViewById(R.id.list_view_background);
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         // use this setting to improve performance if you know that changes
@@ -62,20 +62,17 @@ public class MainActivity extends ActionBarActivity {
                             public void onDismiss(final RecyclerView recyclerView, int[] reverseSortedPositions) {
                                 final RVAdapter adapter = mAdapter;
                                 for (int position : reverseSortedPositions) {
-//                                    ContentValues values = mResult.get(position);
                                     if (position != 0) {
                                         int prevItemViewType = adapter.getItemViewType(position - 1);
                                         if (prevItemViewType == 1 && position + 1 < adapter.getItemCount()) {
                                             int nextItemViewType = adapter.getItemViewType(position + 1);
                                             if (nextItemViewType == 1) {
                                                 int pos = position - 1;
-//                                                mResult.remove(pos);
                                                 adapter.notifyItemRemoved(pos);
                                             }
                                         } else {
                                             if (prevItemViewType == 1) {
                                                 int pos = position - 1;
-//                                                mResult.remove(pos);
                                                 adapter.notifyItemRemoved(pos);
                                             }
                                         }
@@ -84,12 +81,6 @@ public class MainActivity extends ActionBarActivity {
                                     Log.d(TAG, "remove: " + pos);
                                     mDataset.remove(pos);
                                     adapter.notifyItemRemoved(pos);
-//                                    int pos = mResult.indexOf(values);
-//                                    mResult.remove(values);
-//                                    adapter.notifyItemRemoved(pos);
-//                                    if (pos - 1 >= 0) {
-//                                        adapter.notifyItemChanged(pos - 1);
-//                                    }
                                 }
                                 recyclerView.postDelayed(new Runnable() {
                                     @Override
@@ -129,18 +120,26 @@ public class MainActivity extends ActionBarActivity {
         });*/
         mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, int position) {
-                Log.d(TAG, "onItemClick: " + view);
-//                View backgroundView = view.findViewById(R.id.selected_background);
+            public void onItemClick(View view, int position, MotionEvent e) {
+                Log.d(this.getClass().getSimpleName(), "onItemClick: " + view);
+                View backgroundView = view.findViewById(R.id.selected_background);
+
+                backgroundView.setPressed(true);
+                backgroundView.invalidate();
+                backgroundView.setPressed(false);
 //                backgroundView.setVisibility(backgroundView.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
-                mBackgroundContainer.showBackground(view.getTop(), view.getHeight());
             }
 
             @Override
             public void onLongClick(View view, int position) {
                 Log.d(TAG, "onLongClick: " + view);
+                View backgroundView = view.findViewById(R.id.selected_background);
+
+                backgroundView.setPressed(true);
+                backgroundView.invalidate();
+//                backgroundView.setPressed(false);
             }
-        }));
+        }, mRecyclerView));
 
     }
 

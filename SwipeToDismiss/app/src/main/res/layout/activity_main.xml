@@ -8,19 +8,25 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
-    <view
-        class="by.dzmitryslutskiy.swipetodismiss.BackgroundContainer"
+    <Button
+        android:id="@+id/test_button"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/list_view_background">
+        android:layout_height="48dp" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:scrollbars="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-             />
+    <View
+        android:layout_below="@id/test_button"
+        android:id="@+id/test_view"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:clickable="true"
+        android:longClickable="true"
+        />
 
-    </view>
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@id/test_view"
+        android:id="@+id/recycler_view"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </RelativeLayout>
